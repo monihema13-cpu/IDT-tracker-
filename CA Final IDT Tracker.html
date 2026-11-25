@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CA Final IDT Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F1FB; --surface:#FFFFFF; --ink:#1E1B2E; --muted:#6A6585; --line:#DDD8EE;
+  --gst:#5B3FD1; --cus:#D6336C; --done:#E6F5EC; --seg:#DDD8EE;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#12101C;--surface:#1C1930;--ink:#ECE9F8;--muted:#A19BC0;--line:#2E2A47;--gst:#A78BFA;--cus:#F472B6;--done:#143025;--seg:#2E2A47;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#12101C;--surface:#1C1930;--ink:#ECE9F8;--muted:#A19BC0;--line:#2E2A47;--gst:#A78BFA;--cus:#F472B6;--done:#143025;--seg:#2E2A47;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.4 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line);padding:14px 16px 12px}
+.wrap{max-width:720px;margin:0 auto}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+h1{font-size:18px;font-weight:700;margin:0}
+.big{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.strip{display:flex;gap:2px;margin-top:10px}
+.strip i{flex:1;height:8px;background:var(--seg);border-radius:2px}
+.strip i.on{background:var(--c)}
+.gst{--c:var(--gst)} .cus{--c:var(--cus)}
+main{padding:16px 16px 40px}
+.sec{margin:8px 0 28px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.sec-h h2{font-size:17px;font-weight:700;margin:0;color:var(--c)}
+.sec-h span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sec-h[data-sec]{cursor:pointer;padding:6px 0;user-select:none}
+.sec-h[data-sec]:focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:6px}
+.chev{display:inline-block;width:1em;font-weight:700}
+.bar{display:flex;gap:8px;margin-bottom:12px}
+.list[hidden]{display:none}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+.row{border-top:1px solid var(--line)}
+summary{display:flex;align-items:center;gap:10px;padding:14px;cursor:pointer;list-style:none;user-select:none}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
+summary .name{flex:1}
+.arrow{display:inline-block;width:1em;color:var(--c);transition:transform .15s}
+.row[open] .arrow{transform:rotate(90deg)}
+.stat{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.full .stat{color:var(--c);border-color:var(--c)}
+.row:first-child{border-top:0}
+.row.full{background:var(--done)}
+.name{font-weight:600;min-width:0}
+.name small{color:var(--muted);font-weight:500;margin-right:6px;font-variant-numeric:tabular-nums}
+.checks{display:flex;flex-direction:column;gap:8px;padding:0 14px 14px}
+label.ck{display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;cursor:pointer;user-select:none;white-space:nowrap;min-height:40px}
+label.ck input{width:18px;height:18px;margin:0;accent-color:var(--c);cursor:pointer}
+label.ck:has(input:checked){border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent)}
+label.ck:has(input:focus-visible){outline:2px solid var(--c);outline-offset:2px}
+.checks label.ck{justify-content:flex-start}
+.foot{text-align:center}
+button{font:600 14px Figtree,system-ui,sans-serif;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer}
+button:hover{color:var(--ink);border-color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top"><div><h1>CA Final IDT Tracker</h1><div class="sub" id="count">Nov 2027 attempt</div></div><div class="big" id="pct">0%</div></div>
+  <div class="strip gst" id="s-gst"></div>
+  <div class="strip cus" id="s-cus"></div>
+</div></header>
+<main><div class="wrap">
+  <div class="bar"><button id="exp" type="button">Expand all</button><button id="col" type="button">Collapse all</button></div>
+  <section class="sec gst"><div class="sec-h" role="button" tabindex="0" aria-expanded="true" data-sec="gst"><h2><span class="chev">▾</span>Part I: GST</h2><span id="t-gst"></span></div><div class="list" id="l-gst"></div></section>
+  <section class="sec cus"><div class="sec-h" role="button" tabindex="0" aria-expanded="true" data-sec="cus"><h2><span class="chev">▾</span>Part II: Customs and FTP</h2><span id="t-cus"></span></div><div class="list" id="l-cus"></div></section>
+  <div class="foot"><button id="reset" type="button">Reset all ticks</button></div>
+</div></main>
+<script>
+var GST=["Supply under GST","Charge of GST","Place of Supply","Exemptions from GST","Time of Supply","Value of Supply","Input Tax Credit","Computation of GST Liability","Registration","Tax Invoice, Credit and Debit Notes","Accounts and Records","E-Way Bill","Payment of Tax","TDS, TCS and E-commerce","Refunds","Job Work","Returns","Assessment and Audit","Inspection, Search, Seizure and Arrest","Demand and Recovery","Liability to Pay in Certain Cases","Offences and Penalties","Advance Ruling","Appeals and Revision","Import and Export under GST (including SEZ)","Miscellaneous provisions","Compensation Cess","Ethics under GST"];
+var CUS=["Levy and Exemptions","Types of Duties","Classification","Valuation","Import and Export Procedures","Baggage, Courier and Postal Imports","Warehousing","Duty Drawback","Refunds","Demand, Penalties, Offences and Appeals","Foreign Trade Policy"];
+var KEY="ca-final-idt-tracker-v1", state={};
+try{var raw=localStorage.getItem(KEY); if(raw) state=JSON.parse(raw)||{};}catch(e){state={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var parts=[{id:"gst",items:GST,start:1},{id:"cus",items:CUS,start:GST.length+1}];
+function build(p){
+  var h="";
+  p.items.forEach(function(t,i){
+    var n=p.start+i,a="c"+n,b="p"+n;
+    h+='<details class="row" data-n="'+n+'"><summary><span class="arrow">▸</span><span class="name"><small>'+n+'</small>'+t+'</span><span class="stat" id="st'+n+'"></span></summary><div class="checks">'
+     +'<label class="ck"><input type="checkbox" data-k="'+a+'"'+(state[a]?' checked':'')+'> Concepts</label>'
+     +'<label class="ck"><input type="checkbox" data-k="'+b+'"'+(state[b]?' checked':'')+'> Practice sums</label>'
+     +'</div></details>';
+  });
+  document.getElementById("l-"+p.id).innerHTML=h;
+  var s="";for(var j=0;j<p.items.length*2;j++)s+="<i></i>";
+  document.getElementById("s-"+p.id).innerHTML=s;
+}
+function update(){
+  var all=0,allDone=0;
+  parts.forEach(function(p){
+    var done=0,total=p.items.length*2;
+    p.items.forEach(function(t,i){
+      var n=p.start+i,c=!!state["c"+n],q=!!state["p"+n];
+      if(c)done++; if(q)done++;
+      var row=document.querySelector('.row[data-n="'+n+'"]');
+      if(row) row.classList.toggle("full",c&&q);
+      var st=document.getElementById("st"+n); if(st) st.textContent=(c&&q)?"✓ Done":((c?1:0)+(q?1:0))+"/2";
+    });
+    var list=document.getElementById("l-"+p.id), rows=Array.prototype.slice.call(list.children);
+    rows.sort(function(a,b){var fa=a.classList.contains("full")?1:0, fb=b.classList.contains("full")?1:0; return fa-fb||(+a.dataset.n)-(+b.dataset.n);});
+    var moved=false; rows.forEach(function(r,i){if(list.children[i]!==r)moved=true;});
+    if(moved) rows.forEach(function(r){list.appendChild(r);});
+    var segs=document.getElementById("s-"+p.id).children;
+    for(var j=0;j<segs.length;j++)segs[j].classList.toggle("on",j<done);
+    document.getElementById("t-"+p.id).textContent=done+" of "+total+" ticks · "+Math.round(done/total*100)+"%";
+    all+=total;allDone+=done;
+  });
+  document.getElementById("pct").textContent=Math.round(allDone/all*100)+"%";
+  document.getElementById("count").textContent="Nov 2027 attempt · "+allDone+" of "+all+" ticks done";
+}
+parts.forEach(build);
+var CK="ca-final-idt-collapsed-v1", coll={};
+try{coll=JSON.parse(localStorage.getItem(CK))||{};}catch(e){coll={};}
+function applyColl(){
+  ["gst","cus"].forEach(function(id){
+    var c=!!coll[id];
+    document.getElementById("l-"+id).hidden=c;
+    var h=document.querySelector('[data-sec="'+id+'"]');
+    h.setAttribute("aria-expanded",c?"false":"true");
+    h.querySelector(".chev").textContent=c?"▸":"▾";
+  });
+  try{localStorage.setItem(CK,JSON.stringify(coll));}catch(e){}
+}
+document.querySelectorAll("[data-sec]").forEach(function(h){
+  var id=h.getAttribute("data-sec");
+  function tog(){coll[id]=!coll[id];applyColl();}
+  h.addEventListener("click",tog);
+  h.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});
+});
+document.getElementById("exp").addEventListener("click",function(){coll={};applyColl();});
+document.getElementById("col").addEventListener("click",function(){coll={gst:true,cus:true};applyColl();});
+applyColl();
+document.addEventListener("change",function(e){
+  var k=e.target.getAttribute&&e.target.getAttribute("data-k");
+  if(!k)return;
+  if(e.target.checked)state[k]=1; else delete state[k];
+  save();update();
+});
+document.getElementById("reset").addEventListener("click",function(){
+  if(!confirm("Clear every tick? This can’t be undone."))return;
+  state={};save();
+  document.querySelectorAll("input[data-k]").forEach(function(i){i.checked=false;});
+  update();
+});
+update();
+</script>
+</body>
+</html>
